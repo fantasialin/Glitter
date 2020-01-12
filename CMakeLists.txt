@@ -71,6 +71,14 @@ target_link_libraries(HelloTriangle assimp glfw
                       ${GLFW_LIBRARIES} ${GLAD_LIBRARIES}
                       BulletDynamics BulletCollision LinearMath)
 
+add_executable(HelloRectangle Samples/HelloRectangle/main.cpp ${PROJECT_HEADERS}
+                               ${PROJECT_SHADERS} ${PROJECT_CONFIGS}
+                               ${VENDORS_SOURCES})
+
+target_link_libraries(HelloRectangle assimp glfw
+                      ${GLFW_LIBRARIES} ${GLAD_LIBRARIES}
+                      BulletDynamics BulletCollision LinearMath)
+
 set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PROJECT_NAME})
 
