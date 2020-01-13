@@ -61,8 +61,17 @@ int main(int argc, char * argv[]) {
 
     // Check for Valid Context
     if (mWindow == nullptr) {
-        cerr << "Failed to Create OpenGL Context\n";
-        return EXIT_FAILURE;
+        //fallback and try again
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+        glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+        mWindow = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", nullptr, nullptr);
+        if (mWindow == nullptr) {
+            cerr << "Failed to Create OpenGL Context\n";
+            return EXIT_FAILURE;
+        }
     }
 
     // Create Context and Load OpenGL Functions

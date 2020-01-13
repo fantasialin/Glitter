@@ -41,6 +41,8 @@ float vertices[] = {
      0.0f,  0.5f, 0.0f  //top
 };  
 
+int frameState = 0;
+
 int main(int argc, char * argv[]) {
 
     // Load GLFW and Create a Window
@@ -54,8 +56,17 @@ int main(int argc, char * argv[]) {
 
     // Check for Valid Context
     if (mWindow == nullptr) {
-        cerr << "Failed to Create OpenGL Context\n";
-        return EXIT_FAILURE;
+        //fallback and try again
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+        glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+        mWindow = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", nullptr, nullptr);
+        if (mWindow == nullptr) {
+            cerr << "Failed to Create OpenGL Context\n";
+            return EXIT_FAILURE;
+        }
     }
 
     // Create Context and Load OpenGL Functions
@@ -138,8 +149,12 @@ int main(int argc, char * argv[]) {
 
         // draw our first triangle
         glUseProgram(shaderProgram);
-        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);//only draw line
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        if(frameState!=0){
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);//only draw line
+        }
+        else{
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
         glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
@@ -162,6 +177,14 @@ void keyEvnt_callback(GLFWwindow* window, int key, int scancode, int action, int
     std::cout << key << std::endl;
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
+    else if (key == GLFW_KEY_1 && action == GLFW_PRESS){
+        if(frameState!=0){
+            frameState = 0;
+        }
+        else{
+            frameState = 1;
+        }
+    }
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
