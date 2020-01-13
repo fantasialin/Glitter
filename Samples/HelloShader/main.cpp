@@ -22,17 +22,19 @@ void keyEvnt_callback(GLFWwindow* window, int key, int scancode, int action, int
 const unsigned int SCR_WIDTH = 1280;
 const unsigned int SCR_HEIGHT = 720;
 
-const char *vertexShaderSource = "#version 330 core\n"
+const char *vertexShaderSource ="#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"
     "void main()\n"
     "{\n"
-    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+    "   gl_Position = vec4(aPos, 1.0);\n"
     "}\0";
+
 const char *fragmentShaderSource = "#version 330 core\n"
     "out vec4 FragColor;\n"
+    "uniform vec4 ourColor;\n"
     "void main()\n"
     "{\n"
-    "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+    "   FragColor = ourColor;\n"
     "}\n\0";
 
 float vertices[] = {
@@ -161,6 +163,12 @@ int main(int argc, char * argv[]) {
 
         // draw our first triangle
         glUseProgram(shaderProgram);
+        // update shader uniform
+        float timeValue = glfwGetTime();
+        float greenValue = sin(timeValue) / 2.0f + 0.5f;
+        int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+        glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+
         if(frameState!=0){
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);//only draw line
         }
