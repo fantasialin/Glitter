@@ -99,6 +99,19 @@ add_custom_command(
     TARGET HelloShaderClass POST_BUILD
     COMMAND cp -rf  ${CMAKE_SOURCE_DIR}/Samples/HelloShaderClass/HSC* ${CMAKE_BINARY_DIR}/ )
 
+add_executable(HelloTexture Samples/HelloTexture/main.cpp ${PROJECT_HEADERS}
+                               ${PROJECT_SHADERS} ${PROJECT_CONFIGS}
+                               ${VENDORS_SOURCES})
+
+target_link_libraries(HelloTexture assimp glfw
+                      ${GLFW_LIBRARIES} ${GLAD_LIBRARIES}
+                      BulletDynamics BulletCollision LinearMath)
+
+add_custom_command(
+    TARGET HelloTexture POST_BUILD
+    COMMAND cp -rf  ${CMAKE_SOURCE_DIR}/Samples/HelloTexture/HT* ${CMAKE_BINARY_DIR}/ 
+    COMMAND cp -rf  ${CMAKE_SOURCE_DIR}/Samples/HelloTexture/container.jpg ${CMAKE_BINARY_DIR}/images/.)
+
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PROJECT_NAME})
