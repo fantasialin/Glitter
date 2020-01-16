@@ -95,6 +95,11 @@ target_link_libraries(HelloShaderClass assimp glfw
                       ${GLFW_LIBRARIES} ${GLAD_LIBRARIES}
                       BulletDynamics BulletCollision LinearMath)
 
+add_custom_command(
+    TARGET HelloShaderClass POST_BUILD
+    COMMAND cp -rf  ${CMAKE_SOURCE_DIR}/Samples/HelloShaderClass/HSC* ${CMAKE_BINARY_DIR}/ )
+
+
 set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PROJECT_NAME})
 
