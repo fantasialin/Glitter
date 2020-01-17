@@ -113,6 +113,20 @@ add_custom_command(
     COMMAND mkdir -p ${CMAKE_BINARY_DIR}/images
     COMMAND cp -rf  ${CMAKE_SOURCE_DIR}/Samples/HelloTexture/container.jpg ${CMAKE_BINARY_DIR}/images/.)
 
+add_executable(HelloTextureBlend Samples/HelloTextureBlend/main.cpp ${PROJECT_HEADERS}
+                               ${PROJECT_SHADERS} ${PROJECT_CONFIGS}
+                               ${VENDORS_SOURCES})
+
+target_link_libraries(HelloTextureBlend assimp glfw
+                      ${GLFW_LIBRARIES} ${GLAD_LIBRARIES}
+                      BulletDynamics BulletCollision LinearMath)
+
+add_custom_command(
+    TARGET HelloTextureBlend POST_BUILD
+    COMMAND cp -rf  ${CMAKE_SOURCE_DIR}/Samples/HelloTextureBlend/HTB* ${CMAKE_BINARY_DIR}/ 
+    COMMAND mkdir -p ${CMAKE_BINARY_DIR}/images
+    COMMAND cp -rf  ${CMAKE_SOURCE_DIR}/Samples/HelloTextureBlend/awesomeface.png ${CMAKE_BINARY_DIR}/images/.)
+
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PROJECT_NAME})
