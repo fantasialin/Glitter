@@ -110,6 +110,7 @@ target_link_libraries(HelloTexture assimp glfw
 add_custom_command(
     TARGET HelloTexture POST_BUILD
     COMMAND cp -rf  ${CMAKE_SOURCE_DIR}/Samples/HelloTexture/HT* ${CMAKE_BINARY_DIR}/ 
+    COMMAND mkdir -p ${CMAKE_BINARY_DIR}/images
     COMMAND cp -rf  ${CMAKE_SOURCE_DIR}/Samples/HelloTexture/container.jpg ${CMAKE_BINARY_DIR}/images/.)
 
 
