@@ -79,7 +79,7 @@ int main(int argc, char * argv[]) {
 
     // build and compile our shader program
     // ------------------------------------
-    Shader ourShader("HTB_shader.vs", "HTB_shader.fs");
+    Shader ourShader("shaders/HTB_shader.vs", "shaders/HTB_shader.fs");
 
     unsigned int VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);

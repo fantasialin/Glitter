@@ -88,9 +88,9 @@ int main(int argc, char * argv[]) {
     // build and compile our shader program
     // ------------------------------------
     #if _Change_Green_color_
-        Shader ourShader("HSC_shader1.vs", "HSC_shader1.fs");
+        Shader ourShader("shaders/HSC_shader1.vs", "shaders/HSC_shader1.fs");
     #else
-        Shader ourShader("HSC_shader.vs", "HSC_shader.fs");
+        Shader ourShader("shaders/HSC_shader.vs", "shaders/HSC_shader.fs");
     #endif
 
 
