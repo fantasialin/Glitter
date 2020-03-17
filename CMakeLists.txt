@@ -128,6 +128,22 @@ add_custom_command(
     COMMAND mkdir -p ${CMAKE_BINARY_DIR}/images
     COMMAND cp -rf  ${CMAKE_SOURCE_DIR}/Samples/HelloTextureBlend/awesomeface.png ${CMAKE_BINARY_DIR}/images/.)
 
+add_executable(LoadModeltest Samples/LoadModel/main.cpp Samples/LoadModel/stb_image.cpp ${PROJECT_HEADERS}
+                               ${PROJECT_SHADERS} ${PROJECT_CONFIGS}
+                               ${VENDORS_SOURCES})
+
+target_link_libraries(LoadModeltest assimp glfw
+                      ${GLFW_LIBRARIES} ${GLAD_LIBRARIES}
+                      BulletDynamics BulletCollision LinearMath)
+
+add_custom_command(
+    TARGET LoadModeltest POST_BUILD
+    COMMAND mkdir -p ${CMAKE_BINARY_DIR}/LoadModel
+    COMMAND mv -f ${CMAKE_BINARY_DIR}/LoadModeltest ${CMAKE_BINARY_DIR}/LoadModel
+    COMMAND cp -rf  ${CMAKE_SOURCE_DIR}/Samples/LoadModel/vert.vert ${CMAKE_BINARY_DIR}/LoadModel 
+    COMMAND cp -rf  ${CMAKE_SOURCE_DIR}/Samples/LoadModel/frag.frag ${CMAKE_BINARY_DIR}/LoadModel 
+    COMMAND cp -rf  ${CMAKE_SOURCE_DIR}/Samples/LoadModel/nanosuit ${CMAKE_BINARY_DIR}/LoadModel/)
+
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PROJECT_NAME})
