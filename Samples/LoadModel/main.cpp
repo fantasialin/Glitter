@@ -24,11 +24,11 @@
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void processInput(GLFWwindow *window);
+void keyEvnt_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
 // settings
-const unsigned int SCR_WIDTH = 1920;
-const unsigned int SCR_HEIGHT = 1080;
+const unsigned int SCR_WIDTH = 1280;
+const unsigned int SCR_HEIGHT = 720;
 
 // camera
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
@@ -44,32 +44,39 @@ int frameState = 0;
 
 int main(int argc, char * argv[]) {
 
-    // glfw: initialize and configure
-	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
-#endif
+    // Load GLFW and Create a Window
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+    auto mWindow = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", nullptr, nullptr);
 
-    // glfw window creation
-    // --------------------
-	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", nullptr, nullptr);
-	if (window == nullptr)
-	{
-		std::cout << RED << "Failed to create GLFW window" << RESET << std::endl;
-		glfwTerminate();
-		return -1;
-	}
-	glfwMakeContextCurrent(window);
+    // Check for Valid Context
+    if (mWindow == nullptr) {
+        //fallback and try again
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+        glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+        mWindow = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", nullptr, nullptr);
+        if (mWindow == nullptr) {
+            cerr << "Failed to Create OpenGL Context\n";
+            return EXIT_FAILURE;
+        }
+    }
 
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    glfwSetCursorPosCallback(window, mouse_callback);
-    glfwSetScrollCallback(window, scroll_callback);
+	glfwMakeContextCurrent(mWindow);
+
+    glfwSetFramebufferSizeCallback(mWindow, framebuffer_size_callback);
+    glfwSetCursorPosCallback(mWindow, mouse_callback);
+    glfwSetScrollCallback(mWindow, scroll_callback);
+    glfwSetKeyCallback(mWindow, keyEvnt_callback);
 
     // tell GLFW to capture our mouse
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     // glad: load all OpenGL function pointers
     // ---------------------------------------
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -97,17 +104,13 @@ int main(int argc, char * argv[]) {
 
     // render loop
     // -----------
-	while (!glfwWindowShouldClose(window))
+	while (!glfwWindowShouldClose(mWindow))
 	{
         // per-frame time logic
         // --------------------
         float currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
-
-        // input
-        // -----
-        processInput(window);
 
         // render
         // ------
@@ -140,7 +143,7 @@ int main(int argc, char * argv[]) {
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
-        glfwSwapBuffers(window);
+        glfwSwapBuffers(mWindow);
         glfwPollEvents();
     }
 
@@ -150,13 +153,13 @@ int main(int argc, char * argv[]) {
     return 0;
 }
 
-// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
-// ---------------------------------------------------------------------------------------------------------
-void processInput(GLFWwindow *window)
+// Is called whenever a key is pressed/released via GLFW
+void keyEvnt_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-    else if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS){
+    std::cout << key << std::endl;
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, GL_TRUE);
+    else if (key == GLFW_KEY_1 && action == GLFW_PRESS){
         if(frameState!=0){
             frameState = 0;
         }
@@ -164,14 +167,18 @@ void processInput(GLFWwindow *window)
             frameState = 1;
         }
     }
-    else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    else if (key == GLFW_KEY_W && action == GLFW_PRESS){
         camera.ProcessKeyboard(FORWARD, deltaTime);
-    else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    }
+    else if (key == GLFW_KEY_S && action == GLFW_PRESS){
         camera.ProcessKeyboard(BACKWARD, deltaTime);
-    else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    }
+    else if (key == GLFW_KEY_A && action == GLFW_PRESS){
         camera.ProcessKeyboard(LEFT, deltaTime);
-    else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    }
+    else if (key == GLFW_KEY_D && action == GLFW_PRESS){
         camera.ProcessKeyboard(RIGHT, deltaTime);
+    }
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
