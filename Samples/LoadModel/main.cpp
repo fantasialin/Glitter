@@ -41,6 +41,7 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 int frameState = 0;
+int CameraCircleState = 0;
 
 int main(int argc, char * argv[]) {
 
@@ -129,7 +130,16 @@ int main(int argc, char * argv[]) {
 
         // view/projection transformations
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        glm::mat4 view = camera.GetViewMatrix();
+        glm::mat4 view = glm::mat4(1.0f);
+        if(CameraCircleState == 0){
+            view = camera.GetViewMatrix();
+        }
+        else{
+            float radius = 10.0f;
+            float camX   = sin(glfwGetTime()) * radius;
+            float camZ   = cos(glfwGetTime()) * radius;
+            view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        }
         ourShader.setMat4("projection", projection);
         ourShader.setMat4("view", view);
 
@@ -165,6 +175,14 @@ void keyEvnt_callback(GLFWwindow* window, int key, int scancode, int action, int
         }
         else{
             frameState = 1;
+        }
+    }
+    else if (key == GLFW_KEY_2 && action == GLFW_PRESS){
+        if(CameraCircleState!=0){
+            CameraCircleState = 0;
+        }
+        else{
+            CameraCircleState = 1;
         }
     }
     else if (key == GLFW_KEY_W && action == GLFW_PRESS){
