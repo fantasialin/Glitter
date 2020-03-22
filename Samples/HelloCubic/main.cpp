@@ -95,6 +95,16 @@ int frameState = 0;
 int ObjectScaleState = 0;
 int ObjectPositionState = 0;
 int CameraPositionState = 0;
+int CameratestState = 0;
+
+// camera
+glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
+
+// timing
+float deltaTime = 0.0f;	// time between current frame and last frame
+float lastFrame = 0.0f;
 
 int main(int argc, char * argv[]) {
 
@@ -245,14 +255,26 @@ int main(int argc, char * argv[]) {
         ourShader.setMat4("projection", projection);
 
         glm::mat4 view          = glm::mat4(1.0f);
-        if(CameraPositionState!=0){
-            float radius = 10.0f;
-            float camX   = sin(glfwGetTime()) * radius;
-            float camZ   = cos(glfwGetTime()) * radius;
-            view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        // per-frame time logic
+        // --------------------
+        float currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
+        if(CameratestState!=0){
+            //camera control by D-pad
+            view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         }
         else{
-            view  = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+            if(CameraPositionState!=0){
+                float radius = 10.0f;
+                float camX   = sin(glfwGetTime()) * radius;
+                float camZ   = cos(glfwGetTime()) * radius;
+                view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+            }
+            else{
+                view  = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+            }
         }
         ourShader.setMat4("view", view);
 
@@ -338,6 +360,28 @@ void keyEvnt_callback(GLFWwindow* window, int key, int scancode, int action, int
         else{
             CameraPositionState = 1;
         }
+    }
+    else if (key == GLFW_KEY_5 && action == GLFW_PRESS){
+        if(CameratestState!=0){
+            CameratestState = 0;
+        }
+        else{
+            CameratestState = 1;
+        }
+    }
+    
+    float cameraSpeed = 2.5 * deltaTime; 
+    if (key == GLFW_KEY_W && action == GLFW_PRESS){
+        cameraPos += cameraSpeed * cameraFront;
+    }
+    else if (key ==  GLFW_KEY_S && action == GLFW_PRESS){
+        cameraPos -= cameraSpeed * cameraFront;
+    }
+    else if (key ==  GLFW_KEY_A && action == GLFW_PRESS){
+        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    }
+    else if (key ==  GLFW_KEY_D && action == GLFW_PRESS){
+        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
     }
 }
 
