@@ -126,6 +126,23 @@ add_custom_command(
     TARGET HelloTextureBlend POST_BUILD
     COMMAND cp -rf  ${CMAKE_SOURCE_DIR}/Samples/HelloTextureBlend/HTB* ${CMAKE_BINARY_DIR}/shaders)
 
+
+add_executable(HelloCubictest Samples/HelloCubic/main.cpp ${PROJECT_HEADERS}
+                               ${PROJECT_SHADERS} ${PROJECT_CONFIGS}
+                               ${VENDORS_SOURCES})
+
+target_link_libraries(HelloCubictest assimp glfw
+                      ${GLFW_LIBRARIES} ${GLAD_LIBRARIES}
+                      BulletDynamics BulletCollision LinearMath)
+
+add_custom_command(
+    TARGET HelloCubictest POST_BUILD
+    COMMAND mkdir -p ${CMAKE_BINARY_DIR}/HelloCubic
+    COMMAND mv -f ${CMAKE_BINARY_DIR}/HelloCubictest ${CMAKE_BINARY_DIR}/HelloCubic
+    COMMAND cp -rf  ${CMAKE_SOURCE_DIR}/Samples/HelloCubic/vert.vs ${CMAKE_BINARY_DIR}/HelloCubic 
+    COMMAND cp -rf  ${CMAKE_SOURCE_DIR}/Samples/HelloCubic/frag.fs ${CMAKE_BINARY_DIR}/HelloCubic )
+
+
 add_executable(LoadModeltest Samples/LoadModel/main.cpp Samples/LoadModel/stb_image.cpp ${PROJECT_HEADERS}
                                ${PROJECT_SHADERS} ${PROJECT_CONFIGS}
                                ${VENDORS_SOURCES})
@@ -141,7 +158,6 @@ add_custom_command(
     COMMAND cp -rf  ${CMAKE_SOURCE_DIR}/Samples/LoadModel/vert.vert ${CMAKE_BINARY_DIR}/LoadModel 
     COMMAND cp -rf  ${CMAKE_SOURCE_DIR}/Samples/LoadModel/frag.frag ${CMAKE_BINARY_DIR}/LoadModel 
     COMMAND cp -rf  ${CMAKE_SOURCE_DIR}/Samples/LoadModel/nanosuit ${CMAKE_BINARY_DIR}/LoadModel/)
-
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PROJECT_NAME})
