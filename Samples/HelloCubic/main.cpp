@@ -94,6 +94,7 @@ glm::vec3 cubePositions[] = {
 int frameState = 0;
 int ObjectScaleState = 0;
 int ObjectPositionState = 0;
+int CameraPositionState = 0;
 
 int main(int argc, char * argv[]) {
 
@@ -244,7 +245,15 @@ int main(int argc, char * argv[]) {
         ourShader.setMat4("projection", projection);
 
         glm::mat4 view          = glm::mat4(1.0f);
-        view  = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+        if(CameraPositionState!=0){
+            float radius = 10.0f;
+            float camX   = sin(glfwGetTime()) * radius;
+            float camZ   = cos(glfwGetTime()) * radius;
+            view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        }
+        else{
+            view  = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+        }
         ourShader.setMat4("view", view);
 
         if(ObjectPositionState!=0){
@@ -320,6 +329,14 @@ void keyEvnt_callback(GLFWwindow* window, int key, int scancode, int action, int
         }
         else{
             ObjectPositionState = 1;
+        }
+    }
+    else if (key == GLFW_KEY_4 && action == GLFW_PRESS){
+        if(CameraPositionState!=0){
+            CameraPositionState = 0;
+        }
+        else{
+            CameraPositionState = 1;
         }
     }
 }
