@@ -112,7 +112,7 @@ add_custom_command(
     TARGET HelloTexture POST_BUILD
     COMMAND cp -rf  ${CMAKE_SOURCE_DIR}/Samples/HelloTexture/HT* ${CMAKE_BINARY_DIR}/shaders 
     COMMAND mkdir -p ${CMAKE_BINARY_DIR}/images
-    COMMAND cp -rf  ${CMAKE_SOURCE_DIR}/Samples/HelloTexture/container.jpg ${CMAKE_BINARY_DIR}/images/.)
+    COMMAND cp -rf  ${CMAKE_SOURCE_DIR}/Samples/images/* ${CMAKE_BINARY_DIR}/images/.)
 
 add_executable(HelloTextureBlend Samples/HelloTextureBlend/main.cpp ${PROJECT_HEADERS}
                                ${PROJECT_SHADERS} ${PROJECT_CONFIGS}
@@ -124,9 +124,7 @@ target_link_libraries(HelloTextureBlend assimp glfw
 
 add_custom_command(
     TARGET HelloTextureBlend POST_BUILD
-    COMMAND cp -rf  ${CMAKE_SOURCE_DIR}/Samples/HelloTextureBlend/HTB* ${CMAKE_BINARY_DIR}/shaders 
-    COMMAND mkdir -p ${CMAKE_BINARY_DIR}/images
-    COMMAND cp -rf  ${CMAKE_SOURCE_DIR}/Samples/HelloTextureBlend/awesomeface.png ${CMAKE_BINARY_DIR}/images/.)
+    COMMAND cp -rf  ${CMAKE_SOURCE_DIR}/Samples/HelloTextureBlend/HTB* ${CMAKE_BINARY_DIR}/shaders)
 
 add_executable(LoadModeltest Samples/LoadModel/main.cpp Samples/LoadModel/stb_image.cpp ${PROJECT_HEADERS}
                                ${PROJECT_SHADERS} ${PROJECT_CONFIGS}

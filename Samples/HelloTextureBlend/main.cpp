@@ -8,6 +8,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 #include "shader.h"
@@ -40,6 +44,7 @@ unsigned int indices[] = {  // note that we start from 0!
 };
 
 int frameState = 0;
+int ObjectScaleState = 0;
 
 int main(int argc, char * argv[]) {
 
@@ -194,8 +199,29 @@ int main(int argc, char * argv[]) {
         else{
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
+        
+        //first container
+        glm::mat4 transform = glm::mat4(1.0f);
+        if(ObjectScaleState!=0){
+            transform = glm::translate(transform, glm::vec3(0.5f, -0.5f, 0.0f));
+            transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+        }
+        ourShader.setMat4("transform", transform);
+
         glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
 
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+        //second container transformation
+        transform = glm::mat4(1.0f); // reset it to identity matrix
+        if(ObjectScaleState!=0){
+            transform = glm::translate(transform, glm::vec3(-0.5f, 0.5f, 0.0f));
+            float scaleAmount = sin(glfwGetTime());
+            transform = glm::scale(transform, glm::vec3(scaleAmount, scaleAmount, scaleAmount));
+        }
+        ourShader.setMat4("transform", transform);
+
+        // now with the uniform matrix being replaced with new transformations, draw it again.
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         // Flip Buffers and Draw
@@ -224,6 +250,14 @@ void keyEvnt_callback(GLFWwindow* window, int key, int scancode, int action, int
         }
         else{
             frameState = 1;
+        }
+    }
+    else if (key == GLFW_KEY_2 && action == GLFW_PRESS){
+        if(ObjectScaleState!=0){
+            ObjectScaleState = 0;
+        }
+        else{
+            ObjectScaleState = 1;
         }
     }
 }
