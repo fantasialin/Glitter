@@ -142,6 +142,21 @@ add_custom_command(
     COMMAND cp -rf  ${CMAKE_SOURCE_DIR}/Samples/HelloCubic/vert.vs ${CMAKE_BINARY_DIR}/HelloCubic 
     COMMAND cp -rf  ${CMAKE_SOURCE_DIR}/Samples/HelloCubic/frag.fs ${CMAKE_BINARY_DIR}/HelloCubic )
 
+add_executable(HelloLightBasictest Samples/HelloLightBasic/main.cpp ${PROJECT_HEADERS}
+                               ${PROJECT_SHADERS} ${PROJECT_CONFIGS}
+                               ${VENDORS_SOURCES})
+
+target_link_libraries(HelloLightBasictest assimp glfw
+                      ${GLFW_LIBRARIES} ${GLAD_LIBRARIES}
+                      BulletDynamics BulletCollision LinearMath)
+
+add_custom_command(
+    TARGET HelloLightBasictest POST_BUILD
+    COMMAND mkdir -p ${CMAKE_BINARY_DIR}/HelloLightBasic
+    COMMAND mv -f ${CMAKE_BINARY_DIR}/HelloLightBasictest ${CMAKE_BINARY_DIR}/HelloLightBasic
+    COMMAND cp -rf  ${CMAKE_SOURCE_DIR}/Samples/HelloLightBasic/*.vs ${CMAKE_BINARY_DIR}/HelloLightBasic 
+    COMMAND cp -rf  ${CMAKE_SOURCE_DIR}/Samples/HelloLightBasic/*.fs ${CMAKE_BINARY_DIR}/HelloLightBasic )
+
 
 add_executable(LoadModeltest Samples/LoadModel/main.cpp Samples/LoadModel/stb_image.cpp ${PROJECT_HEADERS}
                                ${PROJECT_SHADERS} ${PROJECT_CONFIGS}
