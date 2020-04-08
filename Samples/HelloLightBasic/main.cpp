@@ -206,6 +206,7 @@ int main(int argc, char * argv[]) {
         ourShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
         ourShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
         ourShader.setVec3("lightPos", lightPos);
+        ourShader.setVec3("viewPos", cameraPos);
 
         if(frameState!=0){
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);//only draw line
